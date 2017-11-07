@@ -10,6 +10,7 @@ RUN apt update \
 	&& rm -rf /var/lib/apt/lists/*
 
 COPY ./goaccess-1.2 /opt/goaccess-1.2
+COPY ./GeoLite2-City.mmdb /usr/local/share/GeoLite2-City.mmdb
 
 WORKDIR /opt/goaccess-1.2
 
