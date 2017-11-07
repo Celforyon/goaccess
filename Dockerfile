@@ -6,12 +6,18 @@ LABEL description="Docker with goaccess"
 
 RUN apt update \
 	&& apt install --no-install-recommends --no-install-suggests -y \
-		ca-certificates gnupg wget
-
-RUN echo>/etc/apt/sources.list.d/goaccess.list "deb http://deb.goaccess.io/ stretch main"
-RUN wget -O- https://deb.goaccess.io/gnugpg.key|apt-key add -
-
-RUN apt update \
-	&& apt install --no-install-recommends --no-install-suggests -y \
-		goaccess \
+		gcc make libncurses5-dev libncursesw5-dev libmaxminddb-dev \
 	&& rm -rf /var/lib/apt/lists/*
+
+COPY ./goaccess-1.2 /opt/goaccess-1.2
+
+WORKDIR /opt/goaccess-1.2
+
+RUN ./configure --enable-utf8 --enable-geoip=mmdb
+RUN make
+RUN make install
+
+WORKDIR /
+
+RUN apt purge -y gcc make
+RUN apt autoremove -y
